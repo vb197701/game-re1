@@ -54,5 +54,9 @@ jobs:
         env:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          ADDTIME_URL: ${{ secrets.ADDTIME_URL }}
         run: |
+          echo "=== 开始运行 ==="
+          echo "ADDTIME_URL 是否设置: ${{ secrets.ADDTIME_URL != '' }}"
           xvfb-run -a python main.py
+          echo "=== 运行结束，退出码: $? ==="
