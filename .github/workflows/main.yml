@@ -1,4 +1,4 @@
-name: Robinson-Gaming4free.net-AutoRenew
+name: Auto Run
  
 on:
   schedule:
