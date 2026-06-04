@@ -2,7 +2,7 @@ name: Auto Run
  
 on:
   schedule:
-    - cron: '6 10,22 * * *'
+    - cron: '6 7,19 * * *'
   workflow_dispatch:
 
 jobs:
