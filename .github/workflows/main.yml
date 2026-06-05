@@ -1,14 +1,28 @@
 name: Auto Run
- 
+
 on:
   schedule:
     - cron: '6 7,19 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-run-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   run-addtime:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+
     steps:
+      - name: 📥 Checkout 当前仓库
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: 📥 下载私库脚本
         uses: actions/checkout@v4
         with:
@@ -16,43 +30,113 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           path: private
 
-      - name: 📂 移动脚本到工作目录
-        run: mv private/main.py main.py
+      - name: 📂 使用私库脚本
+        run: |
+          cp private/main.py main.py
+          ls -lah
+          echo "当前仓库工作目录: $GITHUB_WORKSPACE"
 
-      - name: 设置 Python 环境
+            - name: 🐍 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: 安装 Python 依赖及系统组件
+      - name: 📦 安装 Python 依赖及系统组件
         run: |
-          # 1. 升级基础构建工具，防止由于 GHA 镜像太旧导致编译失败
           python -m pip install --upgrade pip setuptools wheel
-          
-          # 2. 显式安装 DrissionPage 及其所有可能漏掉的底层核心依赖
           pip install DrissionPage requests DataRecorder DownloadKit FlowViewer lxml websocket-client psutil
-          
-          # 3. 安装虚拟显示器
+
           sudo apt-get update
           sudo apt-get install -y xvfb
 
-      - name: 安装并配置 Cloudflare WARP CLI
+      - name: 🌐 安装并配置 Cloudflare WARP CLI
         run: |
-          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+          curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg \
+            | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+
+          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" \
+            | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+
           sudo apt-get update
           sudo apt-get install -y cloudflare-warp
-          
+
           warp-cli --accept-tos registration new
           warp-cli --accept-tos mode warp
           warp-cli --accept-tos connect
-          
-          sleep 5
-          echo " WARP 初始化完成"
 
-      - name: 运行续期脚本
+          sleep 5
+          echo "WARP 初始化完成"
+
+      - name: 🔎 检查运行环境
+        run: |
+          python --version
+          which python
+          which google-chrome || true
+          which chromium || true
+          which chromium-browser || true
+          warp-cli --accept-tos status || true
+
+      - name: ▶️ 运行续期脚本
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          xvfb-run -a python main.py
+          set -o pipefail
+          xvfb-run -a python main.py | tee run.log
+
+      - name: 📄 检查结果文件
+        if: always()
+        run: |
+          echo "==== 当前目录文件 ===="
+          ls -lah
+          echo "==== runtime_state.json ===="
+          cat runtime_state.json || true
+          echo "==== run.log 最后 100 行 ===="
+          tail -n 100 run.log || true
+
+      - name: 🗂️ 提交 runtime_state.json 回当前仓库
+        if: always()
+        run: |
+          if [ ! -f runtime_state.json ]; then
+            echo "runtime_state.json 不存在，跳过提交"
+            exit 0
+          fi
+
+          mkdir -p state
+          cp runtime_state.json state/runtime_state.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add state/runtime_state.json
+
+          if git diff --cached --quiet; then
+            echo "runtime_state.json 无变化，无需提交"
+            exit 0
+          fi
+
+          git commit -m "chore: update runtime state"
+          git push
+
+      - name: 📤 上传运行结果
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-state-${{ github.run_number }}
+          retention-days: 15
+          path: |
+            runtime_state.json
+            state/runtime_state.json
+            run.log
+          if-no-files-found: warn
+
+      - name: 📤 上传调试文件
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-files-${{ github.run_number }}
+          retention-days: 7
+          path: |
+            debug/**
+          if-no-files-found: ignore
