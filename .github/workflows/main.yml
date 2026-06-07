@@ -1,15 +1,15 @@
-name: Auto Run
+name: Auto Run Fast Debug
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '6 7,19 * * *'
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: auto-run-${{ github.ref }}
+  group: fast-debug-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -17,9 +17,9 @@ defaults:
     shell: bash
 
 jobs:
-  run-addtime:
+  run-fast-debug:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
 
     steps:
       - name: 📥 Checkout 当前仓库
@@ -49,10 +49,7 @@ jobs:
           test -f requirements.txt || { echo "requirements.txt 不存在"; exit 1; }
 
           mkdir -p state debug
-
-          echo "==== workspace ===="
           ls -lah
-          echo "==== private ===="
           ls -lah private
 
       - name: 🐍 设置 Python
@@ -62,7 +59,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements.txt
 
-      - name: 📦 安装系统依赖与 Python 依赖
+      - name: 📦 安装依赖
         run: |
           set -Eeuo pipefail
 
@@ -79,7 +76,7 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
 
-      - name: 🌐 安装并初始化 Cloudflare WARP
+      - name: 🌐 安装并连接 WARP
         run: |
           set -Eeuo pipefail
 
@@ -96,35 +93,18 @@ jobs:
           warp-cli --accept-tos mode warp || true
           warp-cli --accept-tos connect || true
 
-          echo "等待 WARP 连接..."
-          for i in {1..12}; do
+          for i in {1..6}; do
             status="$(warp-cli --accept-tos status 2>/dev/null || true)"
-            echo "[$i/12] $status"
+            echo "[$i/6] $status"
             if echo "$status" | grep -qi "Connected"; then
-              echo "WARP 已连接"
               break
             fi
-            sleep 3
+            sleep 2
           done
 
           warp-cli --accept-tos status || true
 
-      - name: 🔎 环境检查
-        run: |
-          set -Eeuo pipefail
-
-          python --version
-          which python
-          which xvfb-run
-          which xauth
-          which chromium-browser || true
-          which chromium || true
-          which google-chrome || true
-
-          echo "==== WARP 状态 ===="
-          warp-cli --accept-tos status || true
-
-      - name: ▶️ 运行续期脚本
+      - name: ▶️ 运行抓请求调试脚本
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -132,68 +112,55 @@ jobs:
           set -Eeuo pipefail
           xvfb-run -a python main.py 2>&1 | tee run.log
 
-      - name: 📄 检查结果文件
+      - name: 📄 检查输出
         if: always()
         run: |
-          echo "==== 当前目录文件 ===="
-          ls -lah
-
           echo "==== runtime_state.json ===="
           cat runtime_state.json || true
 
-          echo "==== state/runtime_state.json ===="
-          cat state/runtime_state.json || true
+          echo "==== network_log.json ===="
+          cat network_log.json || true
 
-          echo "==== run.log 最后 150 行 ===="
-          tail -n 150 run.log || true
+          echo "==== run.log 最后 200 行 ===="
+          tail -n 200 run.log || true
 
           echo "==== debug 目录 ===="
           ls -lah debug || true
 
-      - name: 🗂️ 保存并提交 runtime_state.json
+      - name: 🗂️ 保存状态文件
         if: always()
         run: |
           set -Eeuo pipefail
 
-          if [[ ! -f runtime_state.json ]]; then
-            echo "runtime_state.json 不存在，跳过提交"
-            exit 0
-          fi
-
           mkdir -p state
-          cp runtime_state.json state/runtime_state.json
+
+          [[ -f runtime_state.json ]] && cp runtime_state.json state/runtime_state.json || true
+          [[ -f network_log.json ]] && cp network_log.json state/network_log.json || true
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add state/runtime_state.json
+          git add state/runtime_state.json state/network_log.json || true
 
           if git diff --cached --quiet; then
-            echo "state/runtime_state.json 无变化，无需提交"
+            echo "无变化，无需提交"
             exit 0
           fi
 
-          git commit -m "chore: update runtime state"
+          git commit -m "chore: update debug state"
           git push origin HEAD:${GITHUB_REF_NAME}
 
-      - name: 📤 上传运行结果
+      - name: 📤 上传产物
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: runtime-state-${{ github.run_number }}
-          retention-days: 15
+          name: fast-debug-${{ github.run_number }}
+          retention-days: 7
           if-no-files-found: warn
           path: |
             runtime_state.json
+            network_log.json
             state/runtime_state.json
+            state/network_log.json
             run.log
-
-      - name: 📤 上传调试文件
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-files-${{ github.run_number }}
-          retention-days: 7
-          if-no-files-found: ignore
-          path: |
             debug/**
