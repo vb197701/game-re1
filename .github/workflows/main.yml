@@ -19,7 +19,7 @@ defaults:
 jobs:
   run-addtime:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
 
     steps:
       - name: 📥 Checkout 当前仓库
