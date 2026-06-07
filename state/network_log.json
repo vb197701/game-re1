@@ -1,0 +1,97 @@
+{
+  "updated_at": "2026-06-07T02:20:34Z",
+  "url": "https://g4f.gg/dzgg",
+  "current_ip": "104.28.163.78",
+  "page_state_before": "normal",
+  "page_state_after": "normal",
+  "button_text": "+ ADD 90 MINKeep aserv alive for longer",
+  "before_countdown": "37:30:12",
+  "after_countdown": "37:30:07",
+  "delta_seconds": -5,
+  "performance_before_count": 165,
+  "performance_after_count": 174,
+  "performance_new_count": 9,
+  "performance_new_entries": [
+    {
+      "name": "https://id5-sync.com/s/441/9.gif?puid=u_66ae8e54-0ac3-4055-91b9-3d107b86f28a&gdpr=0&gdpr_consent=",
+      "initiatorType": "img",
+      "duration": 3479.600000000006
+    },
+    {
+      "name": "https://www.google-analytics.com/g/collect?v=2&tid=G-0P7PP0R7K3&gtm=45je6631v9252296386za200zd9252296386&_p=1780798823793&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAQ&ae=a&are=1&cid=1313481691.1780798802&frm=0&pscdl=noapi&rcb=15&sr=1280x1024&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.178%7CGoogle%2520Chrome%3B148.0.7778.178%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=2&tag_exp=0~115938466~115938468~118228215~119027222&sid=1780798802&sct=1&seg=1&dl=https%3A%2F%2Fg4f.gg%2Fdzgg&dt=Support%20aserv%20%C2%B7%20g4f.gg&en=scroll&epn.percent_scrolled=90&_et=1&tfd=5303",
+      "initiatorType": "fetch",
+      "duration": 204
+    },
+    {
+      "name": "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/zqwqb/0x4AAAAAADWeWAriMB7Vsqya/dark/fbE/new/normal?lang=auto",
+      "initiatorType": "iframe",
+      "duration": 94.70000000001164
+    },
+    {
+      "name": "https://ps.eyeota.net/pixel?e_rc=1&pid=m51mh00&t=ajs&uid=user_efc52509-7903-483b-a355-af0627e88849_1780798802498",
+      "initiatorType": "script",
+      "duration": 33.29999999998836
+    },
+    {
+      "name": "https://ce.lijit.com/merge?pid=5039&3pid=2M3dv70SYvZ5N0WBRU3bOPO3k0qKv23NHEe_i5v04OD0",
+      "initiatorType": "img",
+      "duration": 39.70000000001164
+    },
+    {
+      "name": "https://sync.smartadserver.com/getuid?gdpr=0&gdpr_consent=&url=https%3A%2F%2Fps.eyeota.net%2Fmatch%3Fbid%3Ddn4m51u%26uid%3D[sas_uid]",
+      "initiatorType": "img",
+      "duration": 81.69999999998254
+    },
+    {
+      "name": "https://eyeota.ck-ie.com/vdm677.gif?gdpr=%7BGDPR%7D&gdpr_consent=%7BGDPR_CONSENT%7D&redir=https://ps.eyeota.net/match?bid=4o6e2ru&uid=%7B$UID%7D",
+      "initiatorType": "img",
+      "duration": 149.39999999999418
+    },
+    {
+      "name": "https://um.simpli.fi/eyeota",
+      "initiatorType": "img",
+      "duration": 158.89999999999418
+    },
+    {
+      "name": "https://ads.scorecardresearch.com/b?c1=9&c2=16937916&c3=2&cs_xi=29Jx5wLZDb1oXPdMr2j9MfdfvzFU4kY3e6i2srNU6_Qg",
+      "initiatorType": "img",
+      "duration": 295
+    }
+  ],
+  "hook_logs_before_count": 0,
+  "hook_logs_after_count": 4,
+  "hook_logs_new_count": 4,
+  "hook_logs": [
+    {
+      "ts": 1780798828862,
+      "type": "fetch",
+      "stage": "start",
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-0P7PP0R7K3&gtm=45je6631v9252296386za200zd9252296386&_p=1780798823793&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAQ&ae=a&are=1&cid=1313481691.1780798802&frm=0&pscdl=noapi&rcb=15&sr=1280x1024&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.178%7CGoogle%2520Chrome%3B148.0.7778.178%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=2&tag_exp=0~115938466~115938468~118228215~119027222&sid=1780798802&sct=1&seg=1&dl=https%3A%2F%2Fg4f.gg%2Fdzgg&dt=Support%20aserv%20%C2%B7%20g4f.gg&en=scroll&epn.percent_scrolled=90&_et=1&tfd=5303"
+    },
+    {
+      "ts": 1780798829048,
+      "type": "xhr",
+      "stage": "start",
+      "method": "POST",
+      "url": "https://cd836371f1d.cdn.intergient.com/fb87a4ea41"
+    },
+    {
+      "ts": 1780798829067,
+      "type": "fetch",
+      "stage": "end",
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-0P7PP0R7K3&gtm=45je6631v9252296386za200zd9252296386&_p=1780798823793&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAQ&ae=a&are=1&cid=1313481691.1780798802&frm=0&pscdl=noapi&rcb=15&sr=1280x1024&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.178%7CGoogle%2520Chrome%3B148.0.7778.178%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=2&tag_exp=0~115938466~115938468~118228215~119027222&sid=1780798802&sct=1&seg=1&dl=https%3A%2F%2Fg4f.gg%2Fdzgg&dt=Support%20aserv%20%C2%B7%20g4f.gg&en=scroll&epn.percent_scrolled=90&_et=1&tfd=5303",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "ts": 1780798829083,
+      "type": "xhr",
+      "stage": "end",
+      "method": "POST",
+      "url": "https://cd836371f1d.cdn.intergient.com/fb87a4ea41",
+      "status": 200
+    }
+  ],
+  "warp_status": "Status update: Connected\nNetwork: healthy",
+  "last_error": ""
+}
