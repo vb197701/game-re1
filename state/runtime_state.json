@@ -1,5 +1,18 @@
 {
-  "updated_at": "2026-06-06T20:31:58Z",
-  "current_duration": "41:48:42",
-  "expiry_info": "Active · expires Jun 8, 2026 at 14:20 UTC"
+  "updated_at": "2026-06-07T02:07:20Z",
+  "current_duration": "37:43:19",
+  "expiry_info": "Active · expires Jun 8, 2026 at 15:50 UTC",
+  "current_ip": "104.28.152.211",
+  "raw_round_count": 8,
+  "effective_loop_count": 8,
+  "success_count": 0,
+  "blocked_count": 0,
+  "repeated_ip_skip_count": 0,
+  "false_positive_count": 8,
+  "challenge_count": 0,
+  "page_failure_count": 0,
+  "seen_ip_count": 9,
+  "last_page_state": "normal",
+  "last_error": "",
+  "warp_status": "Status update: Connected\nNetwork: healthy"
 }
